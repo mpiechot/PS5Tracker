@@ -1,9 +1,7 @@
-﻿using HtmlAgilityPack;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using System.Linq;
 using System.Net.Mail;
 using System.Timers;
 using PS5Bot.Websitetracker;
@@ -20,24 +18,16 @@ namespace PS5Bot
         private List<WebsiteTracker> websitesToTrack;
         private List<string> mailAddresses;
         private AccountInfo info;
-        //private string ps5Name = "PS5 Konsole Sony PlayStation 5 - Standard Edition, 825 GB, 4K, HDR (Mit Laufwerk)";
-        //private Logger log = LogManager.GetCurrentClassLogger();
-
-        //private string amazon_test_url = @"https://www.amazon.de/s?k=Playstation+guthaben&__mk_de_DE=ÅMÅŽÕÑ&ref=nb_sb_noss_2";
 
         public PS5TrackerService()
         {
             InitSearchSpace();
 
-            websitesToTrack = new List<WebsiteTracker>()
-            {
-                new AmazonTracker(),
-                new MediaMarktTracker(),
-                new SaturnTracker(),
-                new AlternateTracker(),
-                new EuronicsTracker(),
-               // new OTTOTracker(@"https://www.otto.de/technik/gaming/playstation/ps5/")
-            };
+            /**Read Mail-AccountInfo for sending the available-mail.
+             * This json has the following form:
+             * {
+             *      address: ">paste the mail address for the bot here<
+            */
             info = JsonConvert.DeserializeObject<AccountInfo>(File.ReadAllText(@"D:\GitHub\PS5Tracker\AmazonPS5Bot\mail.json"));
 
             
@@ -67,8 +57,14 @@ namespace PS5Bot
 
         private void InitSearchSpace()
         {
-            ProductFinder.searchPatterns.Add("(Playstation|PlayStation|PS)\\s{0,1}5 (Spielekonsole|Konsole).*(Standard Edition|Bundle)");
-            //ProductFinder.searchPatterns.Add("PSN Guthaben.*50 EUR");
+            websitesToTrack = new List<WebsiteTracker>()
+            {
+                new AmazonTracker(),
+                new MediaMarktTracker(),
+                new SaturnTracker(),
+                new AlternateTracker(),
+                new EuronicsTracker(),
+            };
         }
 
         private void OnTimeout(object sender, ElapsedEventArgs e)
